@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: activemq-ui
+spec:
+  type: ClusterIP
+  selector:
+    io.kubernetes/app-name: activemq
+    io.activemq/version: "5.10"
+  ports:
+  - name: amq_ui
+    targetPort: ui
+    port: 8161

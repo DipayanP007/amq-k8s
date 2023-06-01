@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: activemq
+  annotations:
+    appName: "activemq-5.10.0"
+spec:
+  replicas: 2
+  serviceName: activemq
+  selector:
+    matchLabels:
+      io.kubernetes/app-name: activemq
+      io.activemq/version: "5.10"
+  template:
+    metadata:
+      labels:
+        io.kubernetes/app-name: activemq
+        io.activemq/version: "5.10"
+    spec:
+      terminationGracePeriodSeconds: 10
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  io.kubernetes/app-name: activemq
+                  io.activemq/version: "5.10"
+      securityContext:
+        fsGroup: 1000
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: activemq-data
+      containers:
+        - name: activemq
+          imagePullPolicy: IfNotPresent
+          image: dipayanp007/amq:5.10
+          env:
+          - name: ACTIVEMQ_BROKER_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: ACTIVEMQ_DATA_DIR
+            value: "/opt/activemq/data" 
+          - name: ACTIVEMQ_DATA_DIR_SIZE
+            value: "100" 
+          - name: ACTIVEMQ_DATA_TMP_SIZE
+            value: "50" 
+          - name: ACTIVEMQ_OPENWIRE_PORT
+            value: "61616" 
+          - name: ACTIVEMQ_AMQP_PORT
+            value: "5672" 
+          - name: ACTIVEMQ_STOMP_PORT
+            value: "61613" 
+          - name: ACTIVEMQ_MQTT_PORT
+            value: "1883" 
+          - name: ACTIVEMQ_WS_PORT
+            value: "61614"
+          - name: PROTECTED_BROKER
+            value: "false"
+          - name: ACTIVEMQ_USERNAME
+            value: "admin"
+          - name: ACTIVEMQ_PASSWORD
+            value: "admin"
+          - name: ACTIVEMQ_WEBADMIN_USERNAME
+            value: "admin"
+          - name: ACTIVEMQ_WEBADMIN_PASSWORD
+            value: "admin123"
+          # args:
+          #   - "bash"
+          #   - "-c"
+          #   - "sleep 10000"
+          ports:
+          - name: ui
+            containerPort: 8161
+          - name: openwire
+            containerPort: 61616
+          - name: amqp
+            containerPort: 5672
+          - name: stomp
+            containerPort: 61613
+          - name: mqtt
+            containerPort: 1883
+          - name: ws
+            containerPort: 61614
+          volumeMounts:
+            - mountPath: /opt/activemq/data
+              name: data

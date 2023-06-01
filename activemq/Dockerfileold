@@ -1,0 +1,29 @@
+FROM adoptopenjdk/openjdk8:alpine-slim
+
+ENV ACTIVEMQ_VERSION 5.10.0
+ENV ACTIVEMQ apache-activemq-$ACTIVEMQ_VERSION
+ENV ACTIVEMQ_HOME /opt/activemq
+
+RUN apk add --update curl && \
+    rm -rf /var/cache/apk/* && \
+    mkdir -p /opt && \
+    curl -s -S https://archive.apache.org/dist/activemq/$ACTIVEMQ_VERSION/$ACTIVEMQ-bin.tar.gz | tar -xvz -C /opt && \
+    mv /opt/$ACTIVEMQ $ACTIVEMQ_HOME && \
+    addgroup -S activemq && \
+    adduser -S -H -G activemq -h $ACTIVEMQ_HOME activemq && \
+    chown -R activemq:activemq $ACTIVEMQ_HOME && \
+    chown -h activemq:activemq $ACTIVEMQ_HOME
+
+EXPOSE 61616 8161
+
+COPY entrypoint.sh /
+RUN chmod +x /entrypoint.sh
+
+USER activemq
+WORKDIR $ACTIVEMQ_HOME
+
+ENTRYPOINT ["/entrypoint.sh"]
+
+
+
+# https://archive.apache.org/dist/activemq/5.10.0/apache-activemq-5.10.0-bin.tar.gz

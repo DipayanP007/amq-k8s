@@ -1,0 +1,14 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nfs2
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: 74.235.58.162
+  share: /nfs-share
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+mountOptions:
+  - hard
+  - nfsvers=4.1
+allowVolumeExpansion: true

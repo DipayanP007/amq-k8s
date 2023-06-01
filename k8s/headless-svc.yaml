@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: activemq
+spec:
+  type: ClusterIP
+  clusterIP: None
+  selector:
+    io.kubernetes/app-name: activemq
+    io.activemq/version: "5.10"
+  ports:
+  - name: amq-openwire
+    port: 61616
+    targetPort: openwire
+  - name: amq-amqp
+    targetPort: amqp
+    port: 5672
+  - name: amq-stomp
+    targetPort: stomp
+    port: 61613
+  - name: amq-mqtt
+    targetPort: mqtt
+    port: 1883
+  - name: amq-ws
+    targetPort: ws
+    port: 61614
