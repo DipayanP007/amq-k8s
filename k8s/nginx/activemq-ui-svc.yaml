@@ -5,9 +5,9 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    io.kubernetes/app-name: activemq
+    io.kubernetes/app-name: activemq-ui
     io.activemq/version: "5.10"
   ports:
-  - name: amq_ui
+  - name: amq-ui
     targetPort: ui
-    port: 8161
+    port: 80

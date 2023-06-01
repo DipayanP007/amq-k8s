@@ -34,39 +34,46 @@ spec:
             claimName: activemq-data
       containers:
         - name: activemq
-          imagePullPolicy: IfNotPresent
-          image: dipayanp007/amq:5.10
+          imagePullPolicy: Always
+          image: dipayanp007/amq:5.10-beta
           env:
           - name: ACTIVEMQ_BROKER_NAME
             valueFrom:
               fieldRef:
                 fieldPath: metadata.name
-          - name: ACTIVEMQ_DATA_DIR
-            value: "/opt/activemq/data" 
-          - name: ACTIVEMQ_DATA_DIR_SIZE
-            value: "100" 
-          - name: ACTIVEMQ_DATA_TMP_SIZE
-            value: "50" 
-          - name: ACTIVEMQ_OPENWIRE_PORT
-            value: "61616" 
-          - name: ACTIVEMQ_AMQP_PORT
-            value: "5672" 
-          - name: ACTIVEMQ_STOMP_PORT
-            value: "61613" 
-          - name: ACTIVEMQ_MQTT_PORT
-            value: "1883" 
-          - name: ACTIVEMQ_WS_PORT
-            value: "61614"
-          - name: PROTECTED_BROKER
-            value: "false"
-          - name: ACTIVEMQ_USERNAME
-            value: "admin"
-          - name: ACTIVEMQ_PASSWORD
-            value: "admin"
-          - name: ACTIVEMQ_WEBADMIN_USERNAME
-            value: "admin"
-          - name: ACTIVEMQ_WEBADMIN_PASSWORD
-            value: "admin123"
+          envFrom:
+            - configMapRef:
+                name: activemq-config
+            - secretRef:
+                name: activemq-broker-secrets
+            - secretRef:
+                name: activemq-ui-secrets
+          # - name: ACTIVEMQ_DATA_DIR
+          #   value: "/opt/activemq/data" 
+          # - name: ACTIVEMQ_DATA_DIR_SIZE
+          #   value: "100" 
+          # - name: ACTIVEMQ_DATA_TMP_SIZE
+          #   value: "50" 
+          # - name: ACTIVEMQ_OPENWIRE_PORT
+          #   value: "61616" 
+          # - name: ACTIVEMQ_AMQP_PORT
+          #   value: "5672" 
+          # - name: ACTIVEMQ_STOMP_PORT
+          #   value: "61613" 
+          # - name: ACTIVEMQ_MQTT_PORT
+          #   value: "1883" 
+          # - name: ACTIVEMQ_WS_PORT
+          #   value: "61614"
+          # - name: PROTECTED_BROKER
+          #   value: "false"
+          # - name: ACTIVEMQ_USERNAME
+          #   value: "admin"
+          # - name: ACTIVEMQ_PASSWORD
+          #   value: "admin"
+          # - name: ACTIVEMQ_WEBADMIN_USERNAME
+          #   value: "admin"
+          # - name: ACTIVEMQ_WEBADMIN_PASSWORD
+          #   value: "admin123"
           # args:
           #   - "bash"
           #   - "-c"
@@ -85,5 +92,5 @@ spec:
           - name: ws
             containerPort: 61614
           volumeMounts:
-            - mountPath: /opt/activemq/data
+            - mountPath: /opt/activemq/data/kahadb
               name: data

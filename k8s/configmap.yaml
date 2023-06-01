@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: activemq-config
+data:
+  ACTIVEMQ_DATA_DIR: "/opt/activemq/data" 
+  ACTIVEMQ_DATA_DIR_SIZE: "100" 
+  ACTIVEMQ_DATA_TMP_SIZE: "50" 
+  ACTIVEMQ_OPENWIRE_PORT: "61616" 
+  ACTIVEMQ_AMQP_PORT: "5672" 
+  ACTIVEMQ_STOMP_PORT: "61613" 
+  ACTIVEMQ_MQTT_PORT: "1883" 
+  ACTIVEMQ_WS_PORT: "61614"
+  PROTECTED_BROKER: "false"
