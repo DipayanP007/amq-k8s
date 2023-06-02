@@ -6,7 +6,7 @@ activemq:
   external_secret:
   ## External secret must contain ACTIVEMQ_WEBADMIN_USERNAME, ACTIVEMQ_WEBADMIN_PASSWORD for UI authentication.
   ## It should also contain ACTIVEMQ_USERNAME, ACTIVEMQ_PASSWORD if secured broker is enabled.
-    enabled: true
+    enabled: false
     secrets:
     - broker-secret
     - ui-secret  
@@ -22,7 +22,7 @@ activemq:
     ws_port: "61614"
     
   secure_broker:
-    enabled: false
+    enabled: true
     username: admin
     password: "abqwqweqeqwe"
   
@@ -129,3 +129,42 @@ web:
 externalService:
   enabled: false
   type: LoadBalancer
+
+networkPolicy:
+  broker:
+    enabled: true
+    namespaceSelector:
+      matchExpressions:
+        - key: kubernetes.io/metadata.name
+          operator: "In"
+          values:
+            - "default"
+            - "test"
+    ipBlock:
+      cidr: 172.17.0.0/16
+      except:
+        - 172.17.1.0/24
+    podSelector:
+      matchLabels:
+        role: frontend
+    # ports:
+    # - 123
+    # - 432
+  web:
+    enabled: true
+    namespaceSelector:
+      matchExpressions:
+        - key: kubernetes.io/metadata.name
+          operator: "In"
+          values:
+            - "default"
+            - "test"
+    ipBlock:
+      cidr: 172.17.0.0/16
+      except:
+        - 172.17.1.0/24
+    podSelector:
+      matchLabels:
+        role: frontend
+    # ports:
+    # - 123
