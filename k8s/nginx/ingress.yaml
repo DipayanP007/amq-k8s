@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: myingress
+  labels:
+    name: myingress
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - hello.host
+    secretName: somesecret
+  rules:
+  - host: hello.host
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: mysvc
+            port: 
+              number: 8161
+

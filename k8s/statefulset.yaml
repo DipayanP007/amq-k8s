@@ -17,6 +17,8 @@ spec:
         io.kubernetes/app-name: activemq
         io.activemq/version: "5.10"
     spec:
+      imagePullSecrets:
+        - name: 
       terminationGracePeriodSeconds: 10
       affinity:
         podAntiAffinity:
@@ -26,6 +28,14 @@ spec:
                 matchLabels:
                   io.kubernetes/app-name: activemq
                   io.activemq/version: "5.10"
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: anythin
+                    operator: "In"
+                    values:
+                      - "abc"
       securityContext:
         fsGroup: 1000
       volumes:

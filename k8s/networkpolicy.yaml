@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: activemq-policy
+spec:
+  podSelector:
+    matchLabels:
+      io.kubernetes/app-name: activemq
+      io.activemq/version: "5.10"
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchExpressions:
+              - key: kubernetes.io/metadata.name
+                operator: "In"
+                values:
+                  - "default"
+                  - "test"
+      ports:
+        - port: 61616
+        - port: 5672
+        - port: 61613
+        - port: 1883
+        - port: 61614
+        - port: 8161
+        - port: 80
+ 
