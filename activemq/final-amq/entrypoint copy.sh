@@ -34,11 +34,13 @@ echo "using protected boker"
   if [ ! -z "$ACTIVEMQ_USERNAME" ]; then
     echo "Setting activemq username to $ACTIVEMQ_USERNAME"
     broker_user=$ACTIVEMQ_USERNAME
+    sed -i "s#activemq.username=system#activemq.username=$ACTIVEMQ_USERNAME#" conf/credentials.properties
   fi
  
 if [ ! -z "$ACTIVEMQ_PASSWORD" ]; then
   echo "Setting activemq password"
   broker_pass=$ACTIVEMQ_PASSWORD
+  sed -i "s#activemq.password=manager#activemq.password=$ACTIVEMQ_PASSWORD#" conf/credentials.properties
 fi
 echo "setting user and pwd for amq"
 sed -i "s#<plugins><simpleAuthenticationPlugin><users><authenticationUser username=\"system\" password=\"manager\" groups=\"users,admins\"/></users></simpleAuthenticationPlugin></plugins>#<plugins><simpleAuthenticationPlugin><users><authenticationUser username=\"${broker_user}\" password=\"${broker_pass}\" groups=\"users,admins\"/></users></simpleAuthenticationPlugin></plugins>#" conf/activemq.xml 
@@ -77,8 +79,8 @@ if [[ "$ACTIVEMQ_SQL_DATASTORE" == true ]]; then
   sed -i "s#<property name=\"password\" value=\"admin\"/>#<property name=\"password\" value=\"${sql_password}\"/>#g" conf/sql.xml
 
   if [[ "$FETCH_SQL_JDBC_DRIVER" == "true" ]];then
-  wget https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/12.2.0.jre11/mssql-jdbc-12.2.0.jre11.jar -O mssql-jdbc-12.2.0.jre11.jar
-  mv mssql-jdbc-12.2.0.jre*.jar lib/optional/
+  #wget https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/12.2.0.jre11/mssql-jdbc-12.2.0.jre11.jar -O mssql-jdbc-12.2.0.jre11.jar
+  mv /tmp/mssql-jdbc-12.2.0.jre*.jar lib/optional/
   fi
 
 else
@@ -87,8 +89,10 @@ fi
 
 mkdir -p $ACTIVEMQ_DATA_DIR
 
-#export ACTIVEMQ_OPTS="$ACTIVEMQ_OPTS -Dbroker.name=$ACTIVEMQ_BROKER_NAME -Ddata.dir=$ACTIVEMQ_DATA_DIR -Dheap.percent=$ACTIVEMQ_HEAP_PERCENT -Ddata.dir.size=$ACTIVEMQ_DATA_DIR_SIZE -Ddata.tmp.size=$ACTIVEMQ_DATA_TMP_SIZE -Dport.openwire=$ACTIVEMQ_OPENWIRE_PORT -Dport.amqp=$ACTIVEMQ_AMQP_PORT -Dport.stomp=$ACTIVEMQ_STOMP_PORT -Dport.mqtt=$ACTIVEMQ_MQTT_PORT -Dport.ws=$ACTIVEMQ_WS_PORT"
+export ACTIVEMQ_OPTS="$ACTIVEMQ_OPTS -Dbroker.name=$ACTIVEMQ_BROKER_NAME -Ddata.dir=$ACTIVEMQ_DATA_DIR -Dheap.percent=$ACTIVEMQ_HEAP_PERCENT -Ddata.dir.size=$ACTIVEMQ_DATA_DIR_SIZE -Ddata.tmp.size=$ACTIVEMQ_DATA_TMP_SIZE -Dport.openwire=$ACTIVEMQ_OPENWIRE_PORT -Dport.amqp=$ACTIVEMQ_AMQP_PORT -Dport.stomp=$ACTIVEMQ_STOMP_PORT -Dport.mqtt=$ACTIVEMQ_MQTT_PORT -Dport.ws=$ACTIVEMQ_WS_PORT"
 
+echo "PID: $$"
 echo "*************** Starting Activemq ***************"
 # Start
-exec activemq console
+#sleep 10000
+#exec activemq console

@@ -1,0 +1,14 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="jdbcAdapter" class="org.apache.activemq.store.jdbc.adapter.TransactJDBCAdapter"/>
+  <bean id="databaseLocker" class="org.apache.activemq.store.jdbc.adapter.TransactDatabaseLocker"/>
+  <bean id="mssql-ds" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close"> 
+    <property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/> 
+    <property name="url" value="jdbc:sqlserver://localhost:1433;databaseName=admin;encrypt=true;trustServerCertificate=true;"/> 
+    <property name="username" value="admin"/> 
+    <property name="password" value="admin"/> 
+    <property name="poolPreparedStatements" value="true"/>
+  </bean> 
+
+</beans>
