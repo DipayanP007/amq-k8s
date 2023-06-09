@@ -24,7 +24,10 @@
     <!-- Allows us to use system properties as variables in this configuration file -->
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
+        <list>
             <value>file:${activemq.conf}/broker.properties</value>
+            <value>file:${activemq.conf}/credentials.properties</value>
+        </list>
         </property>
     </bean>
 
@@ -54,7 +57,7 @@
             </policyMap>
         </destinationPolicy>
 
-        <plugins><simpleAuthenticationPlugin><users><authenticationUser username="system" password="manager" groups="users,admins"/></users></simpleAuthenticationPlugin></plugins>
+        <plugins><simpleAuthenticationPlugin><users><authenticationUser username="${activemq.username}" password="${activemq.password}" groups="users,admins"/></users></simpleAuthenticationPlugin></plugins>
         <!--
             The managementContext is used to configure how ActiveMQ is exposed in
             JMX. By default, ActiveMQ uses the MBean server that is started by
@@ -75,10 +78,10 @@
         -->
 		
 		
-
-		<persistenceAdapter>
+        <persistenceAdapter>
             <kahaDB directory="${data.dir}/kahadb"/>
         </persistenceAdapter>
+		
 		
 		<!-- <persistenceAdapter>
             <jdbcPersistenceAdapter dataSource="#mysql-ds" />

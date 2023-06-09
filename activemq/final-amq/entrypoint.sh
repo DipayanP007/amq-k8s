@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set +x
 activemq_webadmin_username="admin"
 activemq_webadmin_pw="admin"
 broker_user="system"
@@ -28,20 +27,7 @@ fi
 
 if [[ $PROTECTED_BROKER == "false" ]]; then
 echo "not using protected broker"
-  sed -i "s#<plugins><simpleAuthenticationPlugin><users><authenticationUser username="system" password="manager" groups="users,admins"/></users></simpleAuthenticationPlugin></plugins>##" conf/activemq.xml 
-elif [[ $PROTECTED_BROKER == true ]]; then
-echo "using protected boker"
-  if [ ! -z "$ACTIVEMQ_USERNAME" ]; then
-    echo "Setting activemq username to $ACTIVEMQ_USERNAME"
-    broker_user=$ACTIVEMQ_USERNAME
-  fi
- 
-if [ ! -z "$ACTIVEMQ_PASSWORD" ]; then
-  echo "Setting activemq password"
-  broker_pass=$ACTIVEMQ_PASSWORD
-fi
-echo "setting user and pwd for amq"
-sed -i "s#<plugins><simpleAuthenticationPlugin><users><authenticationUser username=\"system\" password=\"manager\" groups=\"users,admins\"/></users></simpleAuthenticationPlugin></plugins>#<plugins><simpleAuthenticationPlugin><users><authenticationUser username=\"${broker_user}\" password=\"${broker_pass}\" groups=\"users,admins\"/></users></simpleAuthenticationPlugin></plugins>#" conf/activemq.xml 
+  sed -i "s#<plugins><simpleAuthenticationPlugin><users><authenticationUser username=\"\${activemq.username}\" password=\"\${activemq.password}\" groups=\"users,admins\"/></users></simpleAuthenticationPlugin></plugins>##" conf/activemq.xml 
 fi
 
 if [ ! -z "$ACTIVEMQ_WEBADMIN_USERNAME" ]; then
@@ -76,19 +62,14 @@ if [[ "$ACTIVEMQ_SQL_DATASTORE" == true ]]; then
   sed -i "s#<property name=\"username\" value=\"admin\"/>#<property name=\"username\" value=\"${sql_username}\"/>#g" conf/sql.xml
   sed -i "s#<property name=\"password\" value=\"admin\"/>#<property name=\"password\" value=\"${sql_password}\"/>#g" conf/sql.xml
 
-  if [[ "$FETCH_SQL_JDBC_DRIVER" == "true" ]];then
-  wget https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/12.2.0.jre11/mssql-jdbc-12.2.0.jre11.jar -O mssql-jdbc-12.2.0.jre11.jar
-  mv mssql-jdbc-12.2.0.jre*.jar lib/optional/
-  fi
-
 else
 sed -i "s#<import resource=\"sql.xml\"/>##g" conf/activemq.xml
 fi
 
-mkdir -p $ACTIVEMQ_DATA_DIR
-
-#export ACTIVEMQ_OPTS="$ACTIVEMQ_OPTS -Dbroker.name=$ACTIVEMQ_BROKER_NAME -Ddata.dir=$ACTIVEMQ_DATA_DIR -Dheap.percent=$ACTIVEMQ_HEAP_PERCENT -Ddata.dir.size=$ACTIVEMQ_DATA_DIR_SIZE -Ddata.tmp.size=$ACTIVEMQ_DATA_TMP_SIZE -Dport.openwire=$ACTIVEMQ_OPENWIRE_PORT -Dport.amqp=$ACTIVEMQ_AMQP_PORT -Dport.stomp=$ACTIVEMQ_STOMP_PORT -Dport.mqtt=$ACTIVEMQ_MQTT_PORT -Dport.ws=$ACTIVEMQ_WS_PORT"
+mkdir -p $ACTIVEMQ_DATA_DIR/kahadb
+#export ACTIVEMQ_OPTS="$ACTIVEMQ_OPTS -Dbroker.name=$ACTIVEMQ_BROKER_NAME -Ddata.dir=$ACTIVEMQ_DATA_DIR -Ddata.dir.size=$ACTIVEMQ_DATA_DIR_SIZE -Ddata.tmp.size=$ACTIVEMQ_DATA_TMP_SIZE -Dport.openwire=$ACTIVEMQ_OPENWIRE_PORT -Dport.amqp=$ACTIVEMQ_AMQP_PORT -Dport.stomp=$ACTIVEMQ_STOMP_PORT -Dport.mqtt=$ACTIVEMQ_MQTT_PORT -Dport.ws=$ACTIVEMQ_WS_PORT"
 
 echo "*************** Starting Activemq ***************"
+
 # Start
 exec activemq console

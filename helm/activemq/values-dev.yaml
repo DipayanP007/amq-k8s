@@ -1,0 +1,48 @@
+storage:
+  storageClassName: azurefile-csi
+  storage: 2Gi
+
+activemq:
+  config:
+    data_directory: "/opt/activemq/data"
+    data_dir_size: "2"
+    data_tmp_size: "1"
+    openwire_port: "61616" 
+    amqp_port: "5672" 
+    stomp_port: "61613" 
+    mqtt_port: "1883" 
+    ws_port: "61614"
+  
+  secure_broker:
+    enabled: false
+
+  web:
+    username: admin
+    password: "admin123456"
+
+deployment:
+  standalone: false
+  replicas: 2
+  resources:
+    requests:
+      cpu: 500m
+      memory: 500Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+  affinity:
+    node_affinity: false
+    pod_anti_affinity: default
+
+web:
+  service:
+    type: LoadBalancer
+    port: 8161
+  ingress:
+    enabled: false
+
+networkPolicy:
+  broker:
+    enabled: false
+  web:
+    enabled: false

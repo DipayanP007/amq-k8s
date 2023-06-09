@@ -1,5 +1,5 @@
 storage:
-  storageClassName: azurefile-csi
+  storageClassName: default
   storage: 1Gi
   
 activemq:
@@ -39,50 +39,50 @@ deployment:
   - name: secret1
   replicas: 2
   terminationGracePeriodSeconds: 10
-  resources:
-    requests:
-      cpu: 1000m
-      memory: 1Gi
-    limits:
-      cpu: 2000m
-      memory: 2Gi
+  # resources:
+  #   requests:
+  #     cpu: 1000m
+  #     memory: 1Gi
+  #   limits:
+  #     cpu: 2000m
+  #     memory: 2Gi
   affinity:
-    node_affinity: true
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-          - matchExpressions:
-              - key: anythin
-                operator: "In"
-                values:
-                  - "abc"
+    node_affinity: false
+    # nodeAffinity:
+    #   requiredDuringSchedulingIgnoredDuringExecution:
+    #     nodeSelectorTerms:
+    #       - matchExpressions:
+    #           - key: anythin
+    #             operator: "In"
+    #             values:
+    #               - "abc"
     pod_anti_affinity: default  # Or custom Or disabled
-    podAntiAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        - topologyKey: "kubernetes.io/hostname"
-          labelSelector:
-            matchLabels:
-              io.kubernetes/app-name: "some-value"
-              io.activemq/version: "value"
-  tolerations:
-  - key: "key1"
-    operator: "Equal"
-    value: "value1"
-    effect: "NoSchedule"
-  - key: "key1"
-    operator: "Equal"
-    value: "value1"
-    effect: "NoSchedule"
-  readinessProbe:
-    httpGet:
-      port: ui
-    initialDelaySeconds: 15
-    periodSeconds: 10
-  livenessProbe:
-    httpGet:
-      port: ui
-    initialDelaySeconds: 25
-    periodSeconds: 20
+    # podAntiAffinity:
+    #   requiredDuringSchedulingIgnoredDuringExecution:
+    #     - topologyKey: "kubernetes.io/hostname"
+    #       labelSelector:
+    #         matchLabels:
+    #           io.kubernetes/app-name: "some-value"
+    #           io.activemq/version: "value"
+  # tolerations:
+  # - key: "key1"
+  #   operator: "Equal"
+  #   value: "value1"
+  #   effect: "NoSchedule"
+  # - key: "key1"
+  #   operator: "Equal"
+  #   value: "value1"
+  #   effect: "NoSchedule"
+  # readinessProbe:
+  #   httpGet:
+  #     port: ui
+  #   initialDelaySeconds: 15
+  #   periodSeconds: 10
+  # livenessProbe:
+  #   httpGet:
+  #     port: ui
+  #   initialDelaySeconds: 25
+  #   periodSeconds: 20
 
 web:
   deployment:
@@ -115,10 +115,10 @@ web:
     port: 8161
   ingress:
     enabled: true
-    # labels:
-    #   app: activemq-ui
-    # annotations:
-    #   io.kubernetes/app-name: activemq-ui
+    labels:
+      app: activemq-ui
+    annotations:
+      io.kubernetes/app-name: activemq-ui
     ingressClassName: nginx
     tls:
     - hosts:
@@ -140,13 +140,13 @@ networkPolicy:
           values:
             - "default"
             - "test"
-    ipBlock:
-      cidr: 172.17.0.0/16
-      except:
-        - 172.17.1.0/24
-    podSelector:
-      matchLabels:
-        role: frontend
+    # ipBlock:
+    #   cidr: 172.17.0.0/16
+    #   except:
+    #     - 172.17.1.0/24
+    # podSelector:
+    #   matchLabels:
+    #     role: frontend
     # ports:
     # - 123
     # - 432
@@ -159,12 +159,12 @@ networkPolicy:
           values:
             - "default"
             - "test"
-    ipBlock:
-      cidr: 172.17.0.0/16
-      except:
-        - 172.17.1.0/24
-    podSelector:
-      matchLabels:
-        role: frontend
+    # ipBlock:
+    #   cidr: 172.17.0.0/16
+    #   except:
+    #     - 172.17.1.0/24
+    # podSelector:
+    #   matchLabels:
+    #     role: frontend
     # ports:
     # - 123
