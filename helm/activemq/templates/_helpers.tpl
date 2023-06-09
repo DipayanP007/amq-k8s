@@ -77,6 +77,10 @@ server {{ $.Release.Name }}-activemq-0.{{ $.Release.Name}}-activemq.{{ $.Release
 - secretRef:
     name: {{ $.Release.Name }}-activemq-ui-secrets
 {{- end }}
+{{- if .datastore.sql }}
+- secretRef:
+    name: {{ $.Release.Name }}-activemq-sql-datastore-secrets
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

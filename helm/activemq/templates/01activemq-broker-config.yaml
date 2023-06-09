@@ -14,4 +14,5 @@ data:
   ACTIVEMQ_MQTT_PORT: {{ .mqtt_port | default "1883" | quote }}
   ACTIVEMQ_WS_PORT: {{ .ws_port | default "61614" | quote }}
   PROTECTED_BROKER: {{ include "secure_broker.isDefined" $root.secure_broker | quote }}
+  ACTIVEMQ_SQL_DATASTORE: {{ $root.datastore.sql }}
   {{- end }}
