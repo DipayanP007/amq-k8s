@@ -5,7 +5,7 @@ metadata:
   annotations:
     appName: "activemq-5.10.0"
 spec:
-  {{- $activemq := .Values.activemq.config }}
+  {{- $activemq:= .Values.activemq}}
   {{- with .Values.deployment }}
   {{- if .standalone }}
   replicas: 1
@@ -47,6 +47,9 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: {{ $.Release.Name }}-activemq-data
+        {{- if $activemq.extraVolumes }}
+        {{- $activemq.extraVolumes | toYaml | nindent 8 }}
+        {{- end }}
       containers:
         - name: activemq
           imagePullPolicy: {{ default "IfNotPresent" .imagePullPolicy }}
@@ -65,6 +68,9 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.name
+          {{- if $activemq.extraEnvs }}
+          {{- $activemq.extraEnvs | toYaml | nindent 10 }}
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ $.Release.Name }}-activemq-config
@@ -73,16 +79,19 @@ spec:
           - name: ui
             containerPort: 8161
           - name: openwire
-            containerPort: {{ $activemq.openwire_port | atoi }}
+            containerPort: {{ $activemq.config.openwire_port | atoi }}
           - name: amqp
-            containerPort: {{ $activemq.amqp_port | atoi }}
+            containerPort: {{ $activemq.config.amqp_port | atoi }}
           - name: stomp
-            containerPort: {{ $activemq.stomp_port | atoi }}
+            containerPort: {{ $activemq.config.stomp_port | atoi }}
           - name: mqtt
-            containerPort: {{ $activemq.mqtt_port | atoi }}
+            containerPort: {{ $activemq.config.mqtt_port | atoi }}
           - name: ws
-            containerPort: {{ $activemq.ws_port | atoi }}
+            containerPort: {{ $activemq.config.ws_port | atoi }}
           volumeMounts:
-            - mountPath: {{ printf "%s/kahadb" $activemq.data_directory }}
+            - mountPath: {{ printf "%s/kahadb" $activemq.config.data_directory }}
               name: data
+            {{- if $activemq.extraVolumeMounts }}
+            {{- $activemq.extraVolumeMounts | toYaml | nindent 12 }}
+            {{- end }}
 {{ end }}

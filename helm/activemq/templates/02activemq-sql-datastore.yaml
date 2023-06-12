@@ -1,4 +1,4 @@
-{{- if and .Values.activemq.datastore.sql (not .Values.activemq.external_secret.enabled) }}
+{{- if and .Values.activemq.datastore.sql (and (not .Values.activemq.external_secret.enabled) (not .Values.activemq.extraEnvs)) }}
 {{- with .Values.activemq.datastore.config }}
 apiVersion: v1
 kind: Secret

@@ -30,6 +30,28 @@ activemq:
     username: "admin"
     password: "admin123456"
   
+  extraEnvs:
+  - name: ACTIVEMQ_WEBADMIN_USERNAME
+    value: admin
+  - name: ACTIVEMQ_WEBADMIN_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        key: ACTIVEMQ_WEBADMIN_PASSWORD
+        name: activemq-secret
+
+  # extraVolumeMounts:
+  # - mountPath: /some/path
+  #   name: some-volume
+  #   subPath: some-path
+  
+  # extraVolumes:
+  # - name: some-volume
+  #   configMap:
+  #     name: some-configmap
+  #     items:
+  #     - key: somekey
+  #       path: filename
+
   datastore:
     sql: true
     config:
